@@ -1,0 +1,17 @@
+
+GET http://localhost:3000/Products
+
+###
+
+POST http://localhost:3000/Products HTTP/1.1
+content-type: application/json
+
+{
+    "title": "teste",
+    "price": 1000.40,
+    "description": "Headset gamer razer",
+    "images": "asjdhgasdhgdgajhsdgjhasdghagjhasgd",
+    "quantity": 10
+}
+
+###
