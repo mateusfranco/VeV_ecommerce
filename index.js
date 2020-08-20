@@ -12,3 +12,5 @@ app.use('/', require('./app/src/Products/Products'));
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
 });
+
+// module.exports = app;

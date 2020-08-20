@@ -52,4 +52,15 @@ router.put("/products/:id", (req, res) => {
   return response.json(product);
 });
 
+router.delete("/products/:title", (req, res) =>{
+  const {id} = req.params;
+  const productIndex = products.findIndex((product) => product.id === id);
+  if (productIndex < 0) {
+    return res.status(400).json({ error: "Product not found!" });
+  }
+
+  products.splice(productIndex,1);
+
+});
+
 module.exports = router;

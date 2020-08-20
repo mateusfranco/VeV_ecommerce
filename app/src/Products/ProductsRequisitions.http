@@ -15,3 +15,13 @@ content-type: application/json
 }
 
 ###
+PUT http://localhost:3000/Products:id HTTP/1.1
+content-type: application/json
+
+{
+    "title": "teste",
+    "price": 1000.40,
+    "description": "Headset gamer razer",
+    "images": "asjdhgasdhgdgajhsdgjhasdghagjhasgd",
+    "quantity": 10
+}
