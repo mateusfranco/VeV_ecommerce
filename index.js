@@ -9,8 +9,11 @@ app.use(cors());
 
 app.use('/', require('./app/src/Products/Products'));
 
-app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`);
-});
+if(process.env.NODE_ENV === 'test') module.exports = app;
+else {
+  app.listen(port, () => {
+    console.log(`Example app listening at http://localhost:${port}`);
+  });
+}
 
 // module.exports = app;
