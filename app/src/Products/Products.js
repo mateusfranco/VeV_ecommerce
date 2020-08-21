@@ -15,7 +15,7 @@ router.get("/products", (req, res) => {
   });
   
 router.post("/products", (req, res) => {
-  console.log(req, res);
+  // console.log(req, res);
   const { title, price, description, images, quantity } = req.body;
   const product = {
     id: uuid(),
@@ -47,20 +47,20 @@ router.put("/products/:id", (req, res) => {
     quantity,
   };
 
-  product[productIndex] = product;
+  products[productIndex] = product;
 
-  return response.json(product);
+  return res.json(product);
 });
 
-router.delete("/products/:title", (req, res) =>{
+router.delete("/products/:id", (req, res) =>{
   const {id} = req.params;
   const productIndex = products.findIndex((product) => product.id === id);
   if (productIndex < 0) {
-    return res.status(400).json({ error: "Product not found!" });
+    return res.status(400).json({ error: "delete nao esta prestando" });
   }
 
   products.splice(productIndex,1);
-
+  return res.status(204).send();
 });
 
 module.exports = router;
