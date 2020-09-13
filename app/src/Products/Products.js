@@ -1,42 +1,36 @@
 const { uuid } = require("uuidv4");
 const router = require('express').Router();
+const db = require('../../db/db');
 
-const {
-  products
-} = require('../../db/db');
-
-router.get("/products", (req, res) => {
+router.get("/products",async (req, res) => {
     const { title } = req.query;
-    const results = title
-      ? products.filter((product) => product.title.includes(title))
-      : products;
-  
+
+    const results = title 
+    ? await db.collection('Products').find(product => {
+      return product.title === title;
+    }).toArray()
+    : await db.collection('Products').find().toArray();    
     return res.json(results);
-  });
+});
+
+router.post("/products",async (req, res) => {
   
-router.post("/products", (req, res) => {
-  // console.log(req, res);
   const { title, price, description, images, quantity } = req.body;
   const product = {
-    id: uuid(),
+    _id: uuid(),
     title,
     price,
     description,
     images,
     quantity,
   };
-  products.push(product);
-  return res.json(product);
+  result = await db.collection('Products').insertOne(product);
+  return res.status(200).json(result.ops);
 });
 
-router.put("/products/:id", (req, res) => {
+router.put("/products/:id",async (req, res) => {
   const { id } = req.params;
   const { title, price, description, images, quantity } = req.body;
-
-  const productIndex = products.findIndex((product) => product.id === id);
-  if (productIndex < 0) {
-    return res.status(400).json({ error: "Product not found!" });
-  }
 
   const product = {
     id,
@@ -47,19 +41,19 @@ router.put("/products/:id", (req, res) => {
     quantity,
   };
 
-  products[productIndex] = product;
-
+  const result = await db.collection('Products')
+    .findOneAndReplace({'_id':id},
+    product);
+  if(!result.lastErrorObject.updatedExisting) return res.status(400)
+    .json({message:'object dont exists'}); 
   return res.json(product);
 });
 
-router.delete("/products/:id", (req, res) =>{
+router.delete("/products/:id", async (req, res) =>{
   const {id} = req.params;
-  const productIndex = products.findIndex((product) => product.id === id);
-  if (productIndex < 0) {
-    return res.status(400).json({ error: "delete nao esta prestando" });
-  }
-
-  products.splice(productIndex,1);
+  const result = await db.collection('Products')
+    .findOneAndDelete({'_id':id});
+  if(!result.value) return res.status(400).send();
   return res.status(204).send();
 });
 
