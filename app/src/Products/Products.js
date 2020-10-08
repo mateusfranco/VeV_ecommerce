@@ -1,11 +1,12 @@
 const { uuid } = require("uuidv4");
 const router = require('express').Router();
 const db = require('../../db/db');
+const middlewares = require('./ProductsMiddlewares');
 
 router.get("/products",async (req, res) => {
     const { title } = req.query;
 
-    const results = title 
+    const results = title
     ? await db.collection('Products').find(product => {
       return product.title === title;
     }).toArray()
@@ -13,8 +14,7 @@ router.get("/products",async (req, res) => {
     return res.status(200).json(results);
 });
 
-router.post("/products",async (req, res) => {
-  
+router.post("/products",middlewares.priceNegativeMiddleware, middlewares.quantityNegativeMiddleware, async (req, res) => {
   const { title, price, description, images, quantity } = req.body;
   const product = {
     id: uuid(),
@@ -28,7 +28,7 @@ router.post("/products",async (req, res) => {
   return res.status(200).json(result.ops);
 });
 
-router.put("/products/:id",async (req, res) => {
+router.put("/products/:id", async (req, res) => {
   const { id } = req.params;
   const { title, price, description, images, quantity } = req.body;
 
